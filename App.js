@@ -1,5 +1,8 @@
-import { StyleSheet, Text, View, TextInput, Button, FlatList, Modal, Pressable, Alert } from 'react-native'
+import { StyleSheet, View } from 'react-native'
 import { useState } from 'react'
+import CustomModal from './components/CustomModal'
+import CustomInputItem from './components/CustomInputItem'
+import CustomListItems from './components/CustomListItems'
 
 export default function App() {
   const [textItem, setTextItem] = useState('')
@@ -38,69 +41,29 @@ export default function App() {
     setItemList(itemList.filter(item => item.id !== id));
   }
 
-  const renderListItem = ({ item }) => (
-    <View style={styles.itemList}>
-      <Text>{item.value}</Text>
-      <Pressable
-        style={[styles.button, styles.buttonDeleteInItem]}
-        onPress={() => onSelectItemHandler(item.id)}
-        onLongPress={() => onDeleteLongPress(item.id)}
-      >
-        <Text style={styles.textStyle}>X</Text>
-      </Pressable>
-    </View>
-  )
-
-
   return (
     <>
       <View style={styles.container}>
-        <View style={styles.inputContainer}>
-          <TextInput
-            style={styles.textInput}
-            placeholder="Ingresar tarea"
-            onChangeText={onChangeTextHandler}
-            value={textItem}
-          />
-          <Pressable
-            style={[styles.button, styles.buttonAdd]}
-            onPress={addItemToList}>
-            <Text style={styles.textStyle}>Add</Text>
-          </Pressable>
-        </View>
+        <CustomInputItem
+          placeHolderProp={'Ingresar tarea'}
+          textItemProp={textItem}
+          onChangeTextHandlerEvent={onChangeTextHandler}
+          addItemToListEvent={addItemToList}
+        />
 
-        <FlatList
-          data={itemList}
-          renderItem={renderListItem}
-          keyExtractor={item => item.id}
+        <CustomListItems
+          itemListProp={itemList}
+          onSelectItemHandlerEvent={onSelectItemHandler}
+          onDeleteLongPressEvent={onDeleteLongPress}
         />
       </View>
-      <Modal animationType="fade" transparent={true} visible={modalVisible}>
-        <View style={styles.centeredView}>
-          <View style={styles.modalView}>
-            <View style={styles.modalMessageContainer}>
-              <Text>Se eliminará: </Text>
-              <Text>{itemSelectedToDelete.value}</Text>
-            </View>
-            <View style={styles.modalButtonContainer}>
-              <Pressable
-                style={[styles.button, styles.buttonCancel]}
-                onPress={onCancelModalHandler}>
-                <Text style={styles.textStyle}>Cancelar</Text>
-              </Pressable>
-              
-              <Pressable
-                style={[styles.button, styles.buttonDelete]}
-                onPress={onDeleteModalHandler}>
-                <Text style={styles.textStyle}>Si, eliminar</Text>
-              </Pressable>
-            </View>
-
-          </View>
-        </View>
-
-
-      </Modal>
+      <CustomModal
+        isVisibleProp={modalVisible}
+        animationTypeProp={'fade'}
+        itemSelectedToDeleteProp={itemSelectedToDelete}
+        onCancelModalHandlerEvent={onCancelModalHandler}
+        onDeleteModalHandlerEvent={onDeleteModalHandler}
+      />
     </>
   );
 }
@@ -110,81 +73,5 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#fff',
     padding: 30
-  },
-  inputContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-evenly'
-  },
-  textInput: {
-    width: 230,
-    borderBottomColor: "#ccc",
-    borderBottomWidth: 1,
-  },
-  itemList: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    padding: 10,
-    margin: 10,
-    backgroundColor: "#C2C3C4",
-    borderRadius: 10,
-  },
-  modalMessageContainer: {
-    marginTop: 35,
-    alignItems: "center"
-  },
-  modalButtonContainer: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    paddingTop: 30
-  },
-  centeredView: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginTop: 22,
-  },
-  modalView: {
-    margin: 20,
-    backgroundColor: 'white',
-    borderRadius: 10,
-    padding: 40,
-    alignItems: 'center',
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 4,
-    elevation: 3,
-  },
-  button: {
-    borderRadius: 10,
-    padding: 10,
-    elevation: 2,
-  },
-  buttonDelete: {
-    backgroundColor: '#992600',
-    margin: 2
-  },
-  buttonCancel: {
-    backgroundColor: '#3C414C',
-    margin: 2
-  },
-  buttonAdd: {
-    backgroundColor: '#3C414C',
-  },
-  buttonDeleteInItem: {
-    backgroundColor: '#3C414C',
-  },
-  textStyle: {
-    color: 'white',
-    fontWeight: 'bold',
-    textAlign: 'center',
-  },
-  modalText: {
-    marginBottom: 15,
-    textAlign: 'center',
   },
 });
